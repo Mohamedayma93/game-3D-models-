@@ -1,0 +1,1016 @@
+<html><head><base href="https://example.com"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>لعبة محمد أيمن 3D</title>
+<style>
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.start-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+  text-align: center;
+}
+
+.start-screen h1 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.start-screen p {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.environment-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.environment-button {
+  width: 150px;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.environment-button:hover {
+  transform: scale(1.05);
+}
+
+.environment-button.selected {
+  opacity: 1;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+#start-game {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+#start-game:hover {
+  background-color: #45a049;
+}
+
+#start-game:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+#game-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#game-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+#game-over-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+}
+
+#summary {
+  margin-top: 20px;
+}
+
+#restart-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#restart-button:hover {
+  background-color: #45a049;
+}
+
+#score-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+#coin-counter, #kill-counter, #time-counter {
+  font-size: 24px;
+  color: white;
+  margin-right: 20px;
+}
+
+#time-counter {
+  margin-left: auto;
+}
+
+#lives-container {
+  display: flex;
+}
+
+.life {
+  width: 30px;
+  height: 30px;
+  margin-left: 5px;
+}
+
+#health-bar {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  width: 200px;
+  height: 20px;
+  background-color: #ddd;
+  border-radius: 10px;
+}
+
+#health-bar-fill {
+  width: 100%;
+  height: 100%;
+  background-color: #4CAF50;
+  border-radius: 10px;
+  transition: width 0.3s;
+}
+
+#feature-menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.joystick-area {
+  width: 150px;
+  height: 150px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  position: relative;
+}
+
+.joystick-thumb {
+  width: 50px;
+  height: 50px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.rare-item {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.purple-item {
+  background-color: purple;
+}
+
+.orange-item {
+  background-color: orange;
+}
+
+#controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #joystick-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+        }
+
+        .joystick-area {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .joystick-thumb {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-button {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .control-button:active {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <div id="start-screen" class="start-screen">
+        <h1>مرحباً بك في لعبة محمد أيمن 3D</h1>
+        <p>اختر البيئة</p>
+        <div class="environment-buttons">
+            <button id="desert" class="environment-button" style="background-image: url('https://i.ibb.co/72j8825/desert.png')"></button>
+            <button id="ocean" class="environment-button" style="background-image: url('https://i.ibb.co/5h2wJrh/ocean.png')"></button>
+            <button id="jungle" class="environment-button" style="background-image: url('https://i.ibb.co/JjYGXc2/jungle.png')"></button>
+        </div>
+        <button id="start-game" disabled>بدء اللعبة</button>
+        <select id="feature-menu" multiple>
+            <option value="jump">زر القفز</option>
+            <option value="rewind">عكس الزمن</option>
+            <option value="health">شريط الصحة</option>
+            <option value="extraLife">عنصر الحياة الإضافية</option>
+            <option value="invincibility">عنصر عدم القابلية للإصابة</option>
+            <option value="staticWorld">العالم الثابت</option>
+        </select>
+    </div>
+
+    <div id="game-container" style="display: none;">
+        <canvas id="game-canvas"></canvas>
+        <div id="game-over-screen" class="hidden">
+            <h1>حظاً أوفر</h1>
+            <div id="summary">
+                <p id="coin-summary">Coins: 0</p>
+                <p id="kill-summary">Kills: 0</p>
+                <p id="time-summary">Time: 0s</p>
+            </div>
+            <button id="restart-button">بدء اللعبة مرة أخرى</button>
+        </div>
+
+        <div id="score-container">
+            <span id="coin-counter">Coins: 0</span>
+            <span id="kill-counter">Kills: 0</span>
+            <span id="time-counter">Time: 0s</span>
+            <div id="lives-container">❤️❤️❤️</div>
+        </div>
+
+        <div id="health-bar">
+            <div id="health-bar-fill"></div>
+        </div>
+
+        <div id="controls">
+            <div id="joystick-container">
+                <div id="joystick-area" class="joystick-area">
+                    <div id="joystick-thumb" class="joystick-thumb"></div>
+                </div>
+            </div>
+            <div id="action-buttons">
+                <button class="control-button" id="jump-button">Jump</button>
+                <button class="control-button" id="fire-button">🔥</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const assets = {
+    jungle: {
+        background: 'https://i.ibb.co/kBzb4cG/background.jpg',
+        player: 'https://i.ibb.co/58Db9dj/mario.png',
+        platform: 'https://i.ibb.co/YXCCF2J/platform.png',
+        coin: 'https://i.ibb.co/FVS5zPw/coin.png',
+        enemy: 'https://i.ibb.co/pKxht9K/enemy.png',
+        heart: 'https://i.ibb.co/xsnzyY8/heart.png',
+        music: 'jungle_music.mp3'
+    },
+    ocean: {
+        background: 'https://i.ibb.co/z292cRf/background.jpg',
+        player: 'https://i.ibb.co/MkTDQ1Z/mario.png',
+        platform: 'https://i.ibb.co/KNYWr2h/platform.png',
+        coin: 'https://i.ibb.co/SBkJkRz/coin.png',
+        enemy: 'https://i.ibb.co/0CX48jr/enemy.png',
+        heart: 'https://i.ibb.co/QQhdNxh/heart.png',
+        music: 'ocean_music.mp3'
+    },
+    desert: {
+        background: 'https://i.ibb.co/7QBZ8DY/background.jpg',
+        player: 'https://i.ibb.co/hYknGVp/mario.png',
+        platform: 'https://i.ibb.co/LZRkMjN/platform.png',
+        coin: 'https://i.ibb.co/xDNRP1Z/coin.png',
+        enemy: 'https://i.ibb.co/drSr5r7/enemy.png',
+        heart: 'https://i.ibb.co/ky0RQrS/heart.png',
+        music: 'desert_music.mp3'
+    }
+};
+
+    let gravity = 0; 
+    let autoMoveSpeed = 0.1;
+    let playerSpeed = 0.1;
+    let isJumping = false;
+    let canJump = true;
+    let jumpForce = 0.5;
+
+    let selectedEnvironment = '';
+    let currentAssets;
+    const startScreen = document.getElementById('start-screen');
+    const gameContainer = document.getElementById('game-container');
+    const environmentButtons = document.querySelectorAll('.environment-button');
+    const startButton = document.getElementById('start-game');
+    const featureMenu = document.getElementById('feature-menu');
+
+    let coinCount = 0;
+    let killCount = 0;
+    let lives = 3;
+
+    let joystickOffset = { x: 0, y: 0 };
+    let joystickThumb = document.getElementById('joystick-thumb');
+    let joystickArea = document.getElementById('joystick-area');
+    let isDragging = false;
+
+    let scene, camera, renderer, player, platforms = [], coins = [], enemies = [];
+    let background;
+
+    let chunkSize = 50; // Increase chunk size
+
+    function createPlatform(x, y, z) {
+        const platformGeometry = new THREE.BoxGeometry(3, 0.5, 3);
+        const platformMaterial = new THREE.MeshBasicMaterial({map: platformTexture});
+        const platform = new THREE.Mesh(platformGeometry, platformMaterial);
+        platform.position.set(x, y, z);
+        scene.add(platform);
+        platforms.push(platform);
+        return platform;
+    }
+
+    function createCoin(x, y, z) {
+        const coinGeometry = new THREE.SphereGeometry(0.3, 32, 32);
+        const coinMaterial = new THREE.MeshBasicMaterial({map: coinTexture});
+        const coin = new THREE.Mesh(coinGeometry, coinMaterial);
+        coin.position.set(x, y, z);
+        scene.add(coin);
+        coins.push(coin);
+    }
+
+    function createEnemy(x, y, z) {
+        const enemyGeometry = new THREE.BoxGeometry(1, 1, 1);
+        const enemyMaterial = new THREE.MeshBasicMaterial({map: enemyTexture});
+        const enemy = new THREE.Mesh(enemyGeometry, enemyMaterial);
+        enemy.position.set(x, y, z);
+        scene.add(enemy);
+        enemies.push(enemy);
+    }
+
+    function generateWorld(startZ, endZ) {
+        let generatedObjects = {
+            platforms: [],
+            coins: [],
+            enemies: []
+        };
+
+        for (let z = startZ; z > endZ; z -= chunkSize) {
+            let objectCount = Math.floor(Math.random() * 1.01); // 0 or 1 object per chunk
+            for (let i = 0; i < objectCount; i++) {
+                let x = Math.random() * chunkSize - chunkSize / 2;
+                let y = Math.random() * 5;
+                let platform = createPlatform(x, y, z);
+                generatedObjects.platforms.push(platform);
+
+                if (Math.random() < 0.2) { // 10% chance, down from 15%
+                    let coin = createCoin(x, y + 1.5, z);
+                    generatedObjects.coins.push(coin);
+                }
+
+                if (Math.random() < 0.15) { // 5% chance, down from 10%
+                    let enemy = createEnemy(x, y + 1, z);
+                    generatedObjects.enemies.push(enemy);
+                }
+            }
+        }
+
+        return generatedObjects;
+    }
+
+    environmentButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            selectedEnvironment = button.id;
+            environmentButtons.forEach(btn => btn.style.opacity = '0.5');
+            button.style.opacity = '1';
+            startButton.disabled = false;
+        });
+    });
+
+    startButton.addEventListener('click', () => {
+        if (selectedEnvironment) {
+            startScreen.style.display = 'none';
+            gameContainer.style.display = 'block';
+            currentAssets = assets[selectedEnvironment];
+            initializeGame();
+        }
+    });
+
+    let worldChunks = [];
+    let renderDistance = 2;
+
+    function initializeGame() {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({canvas: document.getElementById('game-canvas')});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const textureLoader = new THREE.TextureLoader();
+    platformTexture = textureLoader.load(currentAssets.platform);
+    coinTexture = textureLoader.load(currentAssets.coin);
+    enemyTexture = textureLoader.load(currentAssets.enemy);
+
+    const skyboxGeometry = new THREE.BoxGeometry(1000, 1000, 1000);
+    const skyboxMaterials = [];
+    for (let i = 0; i < 6; i++) {
+        skyboxMaterials.push(new THREE.MeshBasicMaterial({
+            map: textureLoader.load(currentAssets.background),
+            side: THREE.BackSide
+        }));
+    }
+    background = new THREE.Mesh(skyboxGeometry, skyboxMaterials);
+    scene.add(background);
+
+    // Create the appropriate hero based on the selected environment
+    player = createHero(selectedEnvironment);
+    player.position.set(0, 5, 0);
+    scene.add(player);
+
+    platforms = [];
+    coins = [];
+    enemies = [];
+
+    let initialWorld = generateWorld(0, -chunkSize * renderDistance);
+    platforms = initialWorld.platforms;
+    coins = initialWorld.coins;
+    enemies = initialWorld.enemies;
+
+    camera.position.set(0, 5, 10);
+    camera.lookAt(player.position);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.position.set(0, 10, 5);
+    scene.add(directionalLight);
+
+    function animate() {
+        requestAnimationFrame(animate);
+        updateGame();
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    const jumpButton = document.getElementById('jump-button');
+    const fireButton = document.getElementById('fire-button');
+    const joystickArea = document.getElementById('joystick-area');
+
+    jumpButton.addEventListener('click', jumpPlayer);
+    fireButton.addEventListener('click', fireProjectile);
+
+    joystickArea.addEventListener('touchstart', handleJoystickStart);
+    joystickArea.addEventListener('touchmove', handleJoystickMove);
+    joystickArea.addEventListener('touchend', handleJoystickEnd);
+    jumpButton.addEventListener('touchstart', jumpPlayer);
+    fireButton.addEventListener('touchstart', fireProjectile);
+    
+    updateCounters();
+}
+
+function createAirplaneHero() {
+    return createAirplaneModel();
+}
+
+function createHero(environment) {
+    let hero;
+    
+    switch(environment) {
+        case 'jungle':
+            hero = createAirplaneHero();
+            break;
+        case 'ocean':
+            hero = createSubmarineHero();
+            break;
+        case 'desert':
+            hero = createTentHero();
+            break;
+        default:
+            console.error('Unknown environment');
+            return;
+    }
+    
+    return hero;
+}
+
+function createAirplaneModel() {
+    const airplane = new THREE.Group();
+
+    // Materials
+    const whiteMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+    const redMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 });
+    const glassMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0x88ccff,
+        transparent: true,
+        opacity: 0.3,
+        roughness: 0,
+        metalness: 0,
+        clearcoat: 1,
+        clearcoatRoughness: 0,
+        transmission: 0.5,
+    });
+    const metalMaterial = new THREE.MeshStandardMaterial({ color: 0x888888, metalness: 0.8, roughness: 0.2 });
+
+    // Create the plane body
+    const bodyGeometry = new THREE.CylinderGeometry(0.5, 0.5, 4, 32);
+    bodyGeometry.rotateZ(Math.PI / 2);
+    const body = new THREE.Mesh(bodyGeometry, whiteMaterial);
+    body.castShadow = true;
+    airplane.add(body);
+
+    // Create a more detailed nose cone
+    const noseShape = new THREE.Shape();
+    noseShape.moveTo(0, 0.5);
+    noseShape.quadraticCurveTo(1, 0.5, 1, 0);
+    noseShape.quadraticCurveTo(1, -0.5, 0, -0.5);
+    noseShape.lineTo(0, 0.5);
+
+    const noseGeometry = new THREE.LatheGeometry(noseShape.getPoints(), 32);
+    noseGeometry.rotateZ(-Math.PI / 2);
+    noseGeometry.translate(2.5, 0, 0);
+    const nose = new THREE.Mesh(noseGeometry, whiteMaterial);
+    nose.castShadow = true;
+    airplane.add(nose);
+
+    // Create wings
+    const wingShape = new THREE.Shape();
+    wingShape.moveTo(0, 0);
+    wingShape.lineTo(3, -0.5);
+    wingShape.lineTo(3.5, -0.4);
+    wingShape.lineTo(3.5, 0.4);
+    wingShape.lineTo(3, 0.5);
+    wingShape.lineTo(0, 0.7);
+    wingShape.lineTo(0, 0);
+
+    const wingExtrudeSettings = {
+        steps: 1,
+        depth: 0.1,
+        bevelEnabled: true,
+        bevelThickness: 0.05,
+        bevelSize: 0.05,
+        bevelSegments: 3
+    };
+
+    const wingGeometry = new THREE.ExtrudeGeometry(wingShape, wingExtrudeSettings);
+
+    // Left wing
+    const leftWing = new THREE.Mesh(wingGeometry, redMaterial);
+    leftWing.position.set(0, 0, -0.5);
+    leftWing.rotation.set(
+        THREE.MathUtils.degToRad(-90),
+        THREE.MathUtils.degToRad(180),
+        THREE.MathUtils.degToRad(90)
+    );
+    leftWing.castShadow = true;
+    airplane.add(leftWing);
+
+    // Right wing
+    const rightWing = leftWing.clone();
+    rightWing.position.set(0, 0, 0.5);
+    rightWing.rotation.set(
+        THREE.MathUtils.degToRad(-90),
+        THREE.MathUtils.degToRad(0),
+        THREE.MathUtils.degToRad(-90)
+    );
+    rightWing.castShadow = true;
+    airplane.add(rightWing);
+
+    // Create tail
+    const tailShape = new THREE.Shape();
+    tailShape.moveTo(0, 0);
+    tailShape.lineTo(1, 0.3);
+    tailShape.lineTo(1, 0.6);
+    tailShape.lineTo(0, 0.9);
+    tailShape.lineTo(0, 0);
+
+    const tailGeometry = new THREE.ExtrudeGeometry(tailShape, wingExtrudeSettings);
+    const tail = new THREE.Mesh(tailGeometry, redMaterial);
+    tail.position.set(-2, 0.3, -0.05);
+    tail.castShadow = true;
+    airplane.add(tail);
+
+    // Create horizontal stabilizers
+    const stabilizerShape = new THREE.Shape();
+    stabilizerShape.moveTo(0, 0);
+    stabilizerShape.lineTo(1, -0.1);
+    stabilizerShape.lineTo(1, 0.1);
+    stabilizerShape.lineTo(0, 0.2);
+    stabilizerShape.lineTo(0, 0);
+
+    const stabilizerGeometry = new THREE.ExtrudeGeometry(stabilizerShape, wingExtrudeSettings);
+    const leftStabilizer = new THREE.Mesh(stabilizerGeometry, redMaterial);
+    leftStabilizer.position.set(-2, 0.2, -0.5);
+    leftStabilizer.castShadow = true;
+    airplane.add(leftStabilizer);
+
+    const rightStabilizer = leftStabilizer.clone();
+    rightStabilizer.position.z = 0.5;
+    rightStabilizer.castShadow = true;
+    airplane.add(rightStabilizer);
+
+    // Create propeller
+    const propellerGeometry = new THREE.BoxGeometry(0.05, 0.2, 2);
+    const propeller = new THREE.Group();
+
+    const blade1 = new THREE.Mesh(propellerGeometry, metalMaterial);
+    const blade2 = new THREE.Mesh(propellerGeometry, metalMaterial);
+    blade2.rotation.x = Math.PI / 2;
+
+    propeller.add(blade1);
+    propeller.add(blade2);
+    propeller.position.x = 2.5;
+    propeller.castShadow = true;
+    airplane.add(propeller);
+
+    // Create windows
+    const windowGeometry = new THREE.CylinderGeometry(0.52, 0.52, 0.3, 16, 1, true, 0, Math.PI);
+    windowGeometry.rotateZ(Math.PI / 2);
+    for (let i = 0; i < 5; i++) {
+        const window = new THREE.Mesh(windowGeometry, glassMaterial);
+        window.position.set(1.5 - i * 0.8, 0.3, 0);
+        airplane.add(window);
+    }
+
+airplane.scale.set(0.5, 0.5, 0.5); // Scale the airplane to twice its original size
+
+    // Rotate the entire airplane model to face forward
+    airplane.rotation.y = Math.PI / 2;
+
+    return airplane;
+}
+
+function createSubmarineHero() {
+    const submarine = new THREE.Group();
+
+    // Hull
+    const hullGeometry = new THREE.CylinderGeometry(1, 1, 7, 32);
+    const hullMaterial = new THREE.MeshPhongMaterial({ color: 0x00aaff, shininess: 100 });
+    const hull = new THREE.Mesh(hullGeometry, hullMaterial);
+    hull.rotation.z = Math.PI / 2;
+    submarine.add(hull);
+
+    // Conning tower
+    const towerGeometry = new THREE.CylinderGeometry(0.4, 0.5, 1.5, 16);
+    const towerMaterial = new THREE.MeshPhongMaterial({ color: 0x003366, shininess: 80 });
+    const tower = new THREE.Mesh(towerGeometry, towerMaterial);
+    tower.position.y = 1.2;
+    submarine.add(tower);
+
+    // Fins
+    const finGeometry = new THREE.BoxGeometry(0.8, 1.2, 0.05);
+    const finMaterial = new THREE.MeshPhongMaterial({ color: 0x0dff00, shininess: 70 });
+    const topFin = new THREE.Mesh(finGeometry, finMaterial);
+    topFin.position.set(3, 0.6, 0);
+    submarine.add(topFin);
+
+    const bottomFin = topFin.clone();
+    bottomFin.position.y = -0.6;
+    submarine.add(bottomFin);
+
+    // Propeller
+    const propellerGeometry = new THREE.TorusGeometry(0.4, 0.05, 8, 6);
+    const propellerMaterial = new THREE.MeshPhongMaterial({ color: 0xffcc00, shininess: 150 });
+    const propeller = new THREE.Mesh(propellerGeometry, propellerMaterial);
+    propeller.position.x = -3.6;
+    propeller.rotation.y = Math.PI / 2;
+    submarine.add(propeller);
+
+    // Windows
+    const windowGeometry = new THREE.CircleGeometry(0.15, 16);
+    const windowMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 200 });
+    for (let i = 0; i < 3; i++) {
+        const window = new THREE.Mesh(windowGeometry, windowMaterial);
+        window.position.set(1.5 - i * 1.5, 0.5, 0.99);
+        window.rotation.y = Math.PI / 2;
+        submarine.add(window);
+    }
+
+submarine.scale.set(1.5, 1.5, 1.5); // Scale the submarine to 1.5 times its original size
+
+    submarine.rotation.y = Math.PI / 2; // Face forward
+    return submarine;
+}
+
+function createTentHero() {
+    const tent = new THREE.Group();
+
+    // Create the tent body
+    const tentGeometry = new THREE.ConeGeometry(2, 3, 8);
+    const tentMaterial = new THREE.MeshPhongMaterial({ color: 0xd2b48c });
+    const tentBody = new THREE.Mesh(tentGeometry, tentMaterial);
+    tent.add(tentBody);
+
+    // Create tent entrance
+    const entranceGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1.5, 32, 1, true, 0, Math.PI);
+    const entranceMaterial = new THREE.MeshPhongMaterial({ color: 0x8b4513, side: THREE.DoubleSide });
+    const entrance = new THREE.Mesh(entranceGeometry, entranceMaterial);
+    entrance.position.set(0, -0.75, 1.5);
+    entrance.rotation.y = Math.PI;
+    tent.add(entrance);
+
+    // Add decorative patterns
+    const patternGeometry = new THREE.TorusGeometry(1.5, 0.05, 16, 100);
+    const patternMaterial = new THREE.MeshBasicMaterial({ color: 0x800000 });
+    const pattern = new THREE.Mesh(patternGeometry, patternMaterial);
+    pattern.rotation.x = Math.PI / 2;
+    pattern.position.y = 0.5;
+    tent.add(pattern);
+
+tent.scale.set(1.5, 1.5, 1.5); // Scale the tent to 1.5 times its original size
+    return tent;
+
+    // Rotate the tent to face forward (towards negative z-axis)
+    tent.rotation.y = Math.PI;
+
+    return tent;
+}
+
+    function updateGame() {
+    if (player && player.position) {
+        player.position.z -= autoMoveSpeed;
+        player.position.x += joystickOffset.x * playerSpeed;
+        player.position.y += joystickOffset.y * playerSpeed;
+
+        // Update airplane rotation based on movement
+        player.rotation.z = -joystickOffset.x * 0.5;
+        player.rotation.x = -joystickOffset.y * 0.5;
+
+        // Ensure the airplane always faces forward
+        player.rotation.y = Math.PI / 2;
+
+        // Rotate propeller
+        player.children[player.children.length - 1].rotation.x += 0.5;
+
+        if (platforms && platforms.length > 0) {
+            platforms.forEach(platform => {
+                if (platform && platform.position) {
+                    if (player.position.y - 0.5 <= platform.position.y + 0.25 &&
+                        player.position.y - 0.5 >= platform.position.y - 0.25 &&
+                        Math.abs(player.position.x - platform.position.x) < 1.5 &&
+                        Math.abs(player.position.z - platform.position.z) < 1.5) {
+                        player.position.y = platform.position.y + 0.75;
+                        isJumping = false;
+                        canJump = true;
+                    }
+                }
+            });
+        }
+
+        if (camera && camera.position) {
+            camera.position.x = player.position.x;
+            camera.position.y = player.position.y + 5;
+            camera.position.z = player.position.z + 10;
+            camera.lookAt(player.position);
+        }
+
+        if (coins && coins.length > 0) {
+            coins.forEach((coin, index) => {
+                if (coin && coin.position) {
+                    coin.rotation.y += 0.05;
+                    if (player.position.distanceTo(coin.position) < 1) {
+                        scene.remove(coin);
+                        coins.splice(index, 1);
+                        coinCount++;
+                        updateCounters();
+                    }
+                }
+            });
+        }
+
+        if (enemies && enemies.length > 0) {
+            enemies.forEach(enemy => {
+                if (enemy && enemy.position) {
+                    enemy.position.x += Math.sin(Date.now() * 0.001) * 0.05;
+                    if (player.position.distanceTo(enemy.position) < 1) {
+                        lives--;
+                        updateCounters();
+                        if (lives <= 0) {
+                            endGame();
+                        }
+                    }
+                }
+            });
+        }
+
+        updateWorld();
+    }
+}
+
+    function updateWorld() {
+        if (player && player.position) {
+            let playerChunkZ = Math.floor(player.position.z / chunkSize);
+            let farthestChunkZ = playerChunkZ - renderDistance;
+
+            let newObjects = generateWorld(player.position.z - chunkSize, farthestChunkZ * chunkSize);
+            
+            platforms = platforms.concat(newObjects.platforms);
+            coins = coins.concat(newObjects.coins);
+            enemies = enemies.concat(newObjects.enemies);
+
+            let removeDistance = player.position.z + 30;
+            
+            platforms = platforms.filter(platform => {
+                if (platform && platform.position && platform.position.z > removeDistance) {
+                    scene.remove(platform);
+                    return false;
+                }
+                return true;
+            });
+
+            coins = coins.filter(coin => {
+                if (coin && coin.position && coin.position.z > removeDistance) {
+                    scene.remove(coin);
+                    return false;
+                }
+                return true;
+            });
+
+            enemies = enemies.filter(enemy => {
+                if (enemy && enemy.position && enemy.position.z > removeDistance) {
+                    scene.remove(enemy);
+                    return false;
+                }
+                return true;
+            });
+
+            if (background) {
+                background.position.copy(player.position);
+            }
+        }
+    }
+
+    function jumpPlayer() {
+        if (canJump) {
+            isJumping = true;
+            canJump = false;
+            player.position.y += jumpForce;
+        }
+    }
+
+    function fireProjectile() {
+        const projectileGeometry = new THREE.SphereGeometry(0.2, 32, 32);
+        const projectileMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
+        const projectile = new THREE.Mesh(projectileGeometry, projectileMaterial);
+        projectile.position.set(player.position.x, player.position.y, player.position.z);
+        scene.add(projectile);
+
+        function animateProjectile() {
+            projectile.position.z -= 0.5; 
+            renderer.render(scene, camera);
+
+            if (enemies && Array.isArray(enemies)) {
+                enemies.forEach((enemy, index) => {
+                    if (enemy && enemy.position && projectile.position.distanceTo(enemy.position) < 1) {
+                        scene.remove(enemy);
+                        enemies.splice(index, 1);
+                        scene.remove(projectile);
+                        killCount++;
+                        updateCounters();
+                        return;
+                    }
+                });
+            }
+
+            if (projectile.position.z > player.position.z - 50) {
+                requestAnimationFrame(animateProjectile);
+            } else {
+                scene.remove(projectile);
+            }
+        }
+
+        animateProjectile();
+    }
+
+    function updateCounters() {
+        document.getElementById('coin-counter').textContent = `Coins: ${coinCount}`;
+        document.getElementById('kill-counter').textContent = `Kills: ${killCount}`;
+        document.getElementById('lives-container').innerHTML = '❤️'.repeat(lives);
+    }
+
+    function endGame() {
+        gameContainer.style.display = 'none';
+        const gameOverScreen = document.getElementById('game-over-screen');
+        gameOverScreen.classList.remove('hidden');
+        document.getElementById('coin-summary').textContent = `Coins: ${coinCount}`;
+        document.getElementById('kill-summary').textContent = `Kills: ${killCount}`;
+        document.getElementById('time-summary').textContent = `Time: 0s`; 
+    }
+
+    function handleJoystickStart(event) {
+        isDragging = true;
+        updateJoystickPosition(event);
+    }
+
+    function handleJoystickMove(event) {
+        if (isDragging) {
+            updateJoystickPosition(event);
+        }
+    }
+
+    function handleJoystickEnd() {
+        isDragging = false;
+        joystickOffset = { x: 0, y: 0 };
+        joystickThumb.style.transform = 'translate(-50%, -50%)';
+    }
+
+    function updateJoystickPosition(event) {
+        const touch = event.touches[0];
+        const rect = joystickArea.getBoundingClientRect();
+        const x = touch.clientX - rect.left - rect.width / 2;
+        const y = touch.clientY - rect.top - rect.height / 2;
+
+        const distance = Math.sqrt(x * x + y * y);
+        const maxDistance = rect.width / 2;
+
+        if (distance > maxDistance) {
+            const angle = Math.atan2(y, x);
+            joystickOffset.x = Math.cos(angle);
+            joystickOffset.y = -Math.sin(angle);
+        } else {
+            joystickOffset.x = x / maxDistance;
+            joystickOffset.y = -y / maxDistance;
+        }
+
+        const thumbX = joystickOffset.x * (rect.width / 2);
+        const thumbY = -joystickOffset.y * (rect.height / 2);
+        joystickThumb.style.transform = `translate(calc(-50% + ${thumbX}px), calc(-50% + ${thumbY}px))`;
+    }
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+    </script>
+</body></html>
